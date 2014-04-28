@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     inline: "sudo chsh -s /bin/zsh vagrant"
 
   config.vm.provision "docker",
-    images: ["ubuntu"]
+    images: ["centos"]
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.

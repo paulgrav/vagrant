@@ -45,42 +45,51 @@ WORKDIR /tmp/php-5.5.11
 RUN ./configure --prefix=/opt/php --enable-mbstring --enable-opcache --with-enchant --enable-pcntl --enable-mbregex --with-gd --enable-zip --enable-fpm --with-fpm-user=httpd --with-curl --with-fpm-group=httpd
 RUN make && make install
 
-# WORKDIR /tmp
-# RUN curl http://pecl.php.net/get/mcrypt_filter-0.1.0.tgz | tar xzvf -
-# WORKDIR /tmp/mcrypt_filter-0.1.0
-# RUN /opt/php/bin/phpize
-# RUN ./configure --with-php-config=/opt/php/bin/php-config
-# RUN make install
-# 
-# WORKDIR /tmp
-# RUN curl http://pecl.php.net/get/mongo-1.4.5.tgz | tar xzvf -
-# WORKDIR /tmp/mongo-1.4.5
-# RUN /opt/php/bin/phpize
-# RUN ./configure --with-php-config=/opt/php/bin/php-config
-# RUN make install
-# 
-# WORKDIR /tmp
-# RUN curl http://pecl.php.net/get/oauth-1.2.3.tgz | tar xzvf -
-# WORKDIR /tmp/oauth-1.2.3
-# RUN /opt/php/bin/phpize
-# RUN ./configure --with-php-config=/opt/php/bin/php-config
-# RUN make install
-# 
-# WORKDIR /tmp
-# RUN git clone https://github.com/nicolasff/phpredis.git
-# WORKDIR /tmp/phpredis
-# RUN git checkout $PHP_REDIS_VERSION
-# RUN /opt/php/bin/phpize
-# RUN ./configure --with-php-config=/opt/php/bin/php-config
-# RUN make install
-# 
-# WORKDIR /tmp
-# RUN curl http://xcache.lighttpd.net/pub/Releases/$PHP_XCACHE/xcache-3.1.0.tar.bz2 | tar xjvf -
-# WORKDIR /tmp/xcache-3.1.0
-# RUN /opt/php/bin/phpize
-# RUN ./configure --with-php-config=/opt/php/bin/php-config
-# RUN make install
+WORKDIR /tmp
+RUN curl http://pecl.php.net/get/mcrypt_filter-0.1.0.tgz | tar xzvf -
+WORKDIR /tmp/mcrypt_filter-0.1.0
+RUN /opt/php/bin/phpize
+RUN ./configure --with-php-config=/opt/php/bin/php-config
+RUN make install
+
+WORKDIR /tmp
+RUN curl http://pecl.php.net/get/mongo-1.4.5.tgz | tar xzvf -
+WORKDIR /tmp/mongo-1.4.5
+RUN /opt/php/bin/phpize
+RUN ./configure --with-php-config=/opt/php/bin/php-config
+RUN make install
+
+WORKDIR /tmp
+RUN curl http://pecl.php.net/get/oauth-1.2.3.tgz | tar xzvf -
+WORKDIR /tmp/oauth-1.2.3
+RUN /opt/php/bin/phpize
+RUN ./configure --with-php-config=/opt/php/bin/php-config
+RUN make install
+
+WORKDIR /tmp
+RUN git clone https://github.com/nicolasff/phpredis.git
+WORKDIR /tmp/phpredis
+RUN git checkout $PHP_REDIS_VERSION
+RUN /opt/php/bin/phpize
+RUN ./configure --with-php-config=/opt/php/bin/php-config
+RUN make install
+
+WORKDIR /tmp
+RUN curl http://xcache.lighttpd.net/pub/Releases/3.1.0/xcache-3.1.0.tar.bz2 | tar xjvf -
+WORKDIR /tmp/xcache-3.1.0
+RUN /opt/php/bin/phpize
+RUN ./configure --with-php-config=/opt/php/bin/php-config
+RUN make install
+
+WORKDIR /tmp
+RUN curl http://pecl.php.net/get/xdebug-2.2.4.tgz | tar xzvf -
+WORKDIR /tmp/xdebug-2.2.4
+RUN /opt/php/bin/phpize
+RUN ./configure --with-php-config=/opt/php/bin/php-config
+RUN make install
+
 
 RUN chown -R httpd:httpd /opt/php
 EXPOSE 9000
-ENTRYPOINT ["/opt/php/sbin/php-fpm","-c","/opt/php/etc/php.ini","-y","/opt/php/etc/php-fpm.conf"]
+CMD ["-y","/opt/php/etc/php-fpm.conf"]
+ENTRYPOINT ["/opt/php/sbin/php-fpm","-c","/opt/php/etc/php.ini"]
