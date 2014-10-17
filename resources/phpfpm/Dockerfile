@@ -1,25 +1,15 @@
 FROM paulgrav/base
 
-ENV PHP_VERSION 5.5.11
-ENV PHP_IMAGICK_VERSION 3.1.2
-ENV PHP_MCRYPT_FILTER_VERSION 0.1.0
-ENV PHP_MONGO_VERSION 1.4.5
-ENV PHP_OAUTH_VERSION 1.2.3
-ENV PHP_REDIS_VERSION 2.2.4
-ENV PHP_XCACHE_VERSION 3.1.0
-
 RUN useradd httpd
 
-ADD php-fpm /etc/init.d/php-fpm
 ADD php.ini /opt/php/etc/php.ini
 ADD php-fpm.conf /opt/php/etc/php-fpm.conf
 
 RUN chown httpd:httpd /opt/php/etc/php-fpm.conf
-RUN chown httpd:httpd /etc/init.d/php-fpm
 RUN chown httpd:httpd /opt/php/etc/php.ini
 
 WORKDIR /tmp
-RUN curl http://uk1.php.net/distributions/php-$PHP_VERSION.tar.bz2 | tar xjvf -
+RUN curl http://uk1.php.net/distributions/php-5.5.11.tar.bz2 | tar xjvf -
 RUN yum -y update
 RUN yum groupinstall -y 'Development Tools'
 RUN yum install -y libxml2-devel
@@ -69,10 +59,19 @@ RUN make install
 WORKDIR /tmp
 RUN git clone https://github.com/nicolasff/phpredis.git
 WORKDIR /tmp/phpredis
-RUN git checkout $PHP_REDIS_VERSION
+RUN git checkout 2.2.5
 RUN /opt/php/bin/phpize
 RUN ./configure --with-php-config=/opt/php/bin/php-config
 RUN make install
+
+WORKDIR /tmp
+RUN curl http://pecl.php.net/get/apcu-4.0.4.tgz | tar xzvf -
+WORKDIR /tmp/apcu-4.0.4
+RUN /opt/php/bin/phpize
+RUN ./configure --with-php-config=/opt/php/bin/php-config
+RUN make install
+    
+
 
 WORKDIR /tmp
 RUN curl http://xcache.lighttpd.net/pub/Releases/3.1.0/xcache-3.1.0.tar.bz2 | tar xjvf -

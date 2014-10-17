@@ -23,16 +23,31 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.provision "shell",
-    inline: "yum install -y zsh ncurses-devel"
+    inline: "yum install -y zsh ncurses-devel telnet"
 
   config.vm.provision "shell",
-    inline: "sudo localedef -c -f UTF-8 -i en_GB en_GB.UTF-8"
+    inline: "localedef -c -f UTF-8 -i en_GB en_GB.UTF-8"
 
   config.vm.provision "shell",
-    inline: "sudo chsh -s /bin/zsh vagrant"
+    inline: "chsh -s /bin/zsh vagrant"
+
+  config.vm.provision "shell",
+    inline: "echo \"10.240.67.137 ssdm-docker\" >> /etc/hosts"
 
   config.vm.provision "docker",
     images: ["centos"]
+
+  config.vm.synced_folder "/Users/paul/Sites/", "/opt/Sites"
+  
+  config.ssh.private_key_path = [ '~/.vagrant.d/insecure_private_key', '~/.ssh/id_dsa' ]
+  config.ssh.forward_agent = true
+
+  # config.vm.provision "shell",
+  #   inline: "docker run -v /opt/Sites:/opt/docroot -t paulgrav/apache"
+  # 
+  # config.vm.provision "shell",
+  #   inline: "docker run -v /opt/Sites:/opt/docroot -t paulgrav/phpfpm"
+
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -41,8 +56,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
-  # config.vm.network :forwarded_port, guest: 80, host: 8080
-
+  config.vm.network :forwarded_port, guest: 80, host: 8081
+  config.vm.network :forwarded_port, guest: 8080, host: 8082
+  
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   # config.vm.network :private_network, ip: "192.168.33.10"
